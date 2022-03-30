@@ -23,22 +23,26 @@ public class GameManager : MonoBehaviour
 {
     public Vector2Int bottomLeft, topRight, startPos, targetPos;
     public List<Node> naviList;
+    public bool dignoal;
 
     int sizeX, sizeY;
-    int[] dx = { 0,0,1,-1 };
-    int[] dy = { 1, -1, 0, 0 };
+    int[] dx = { 0,0,1,-1 ,1,1,-1,-1};
+    int[] dy = { 1, -1, 0, 0, 1,-1,1,-1};
     Node[,] arr;
     Node start, target, cur;
 
     List<Node> OpenList, ClosedLIst;//priority queue 어케 쓰는지 모르니
     //일단 리스트로 ㄱ
     //여튼 이것도 다익스트라 비스무리하게 되겠지.
-    public Transform startTR;
+    public Transform startTR, botL, topR, targetTR;
 
 
     public void pathFinding()
     {
         startPos = Vector2Int.RoundToInt(startTR.position);
+        bottomLeft = Vector2Int.RoundToInt(botL.position);
+        topRight = Vector2Int.RoundToInt(topR.position);
+        targetPos = Vector2Int.RoundToInt(targetTR.position);
 
         sizeX = topRight.x - bottomLeft.x + 1;
         sizeY = topRight.y - bottomLeft.y + 1;
@@ -95,7 +99,6 @@ public class GameManager : MonoBehaviour
             {
                 int nx = cur.x + dx[i];
                 int ny = cur.y + dy[i];
-                Debug.Log(nx + " " + ny);
                 if (nx >= bottomLeft.x && nx < topRight.x + 1 && ny >= bottomLeft.y && ny < topRight.y + 1
                     && !arr[nx - bottomLeft.x, ny - bottomLeft.y].isWall
                     && !ClosedLIst.Contains(arr[nx - bottomLeft.x, ny - bottomLeft.y]))
@@ -116,6 +119,34 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
+            /*
+            if (dignoal)
+            {
+                for (int i = 4; i < 8; i++)
+                {
+                    int nx = cur.x + dx[i];
+                    int ny = cur.y + dy[i];
+                    if (nx >= bottomLeft.x && nx < topRight.x + 1 && ny >= bottomLeft.y && ny < topRight.y + 1
+                        && !arr[nx - bottomLeft.x, ny - bottomLeft.y].isWall
+                        && !ClosedLIst.Contains(arr[nx - bottomLeft.x, ny - bottomLeft.y]))
+                    {
+                        if (arr[cur.x - bottomLeft.x, ny - bottomLeft.y].isWall || arr[nx - bottomLeft.x, ny - bottomLeft.y].isWall)
+                            continue;
+
+                        Node nextNode = arr[nx - bottomLeft.x, ny - bottomLeft.y];
+                        int MoveCost = cur.G + 10;
+
+                        if (MoveCost < nextNode.G || !OpenList.Contains(nextNode))
+                        {
+                            nextNode.G = MoveCost;
+                            nextNode.H = Mathf.Abs(nextNode.x - target.x) + Mathf.Abs(nextNode.y - target.y);
+                            nextNode.parentNode = cur;
+
+                            OpenList.Add(nextNode);
+                        }
+                    }
+                }
+            }*/
         }
         Debug.Log("not found");
     }
